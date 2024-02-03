@@ -1,0 +1,60 @@
+<div *ngIf="lists">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="clearfix">
+        <h2 class="float-start">Lists</h2>
+        <button class="btn btn-default float-end" title="New List..." (click)="showNewListModal()">
+          <i class="fa-regular fa-square-plus"></i>
+        </button>
+      </div>
+      <ul class="list-group">
+        <li *ngFor="let item of lists" class="list-group-item" [ngClass]="{ 'active': selectedList == item }"
+          (click)="selectedList = item">
+          <div class="clearfix">
+            <div class="float-start">
+              {{ item.title }}
+            </div>
+            <div class="float-end text-right">
+              <span class="badge badge-light">{{ remainingItems(item) }}</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="col-sm-8" *ngIf="selectedList">
+      <div class="clearfix">
+        <h2 class="float-start">{{ selectedList.title }}</h2>
+        <button id="listOptions" class="btn btn-default float-end" title="List Options..."
+          (click)="showListOptionsModal(selectedList)">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+      </div>
+      <ul id="todo-items" class="list-group mb-2">
+        <li class="list-group-item" *ngFor="let item of selectedList.items; index as i">
+          <div class="d-flex">
+            <div class="todo-item-checkbox">
+              <input type="checkbox" [(ngModel)]="item.done" (change)="saveItem(item)" />
+            </div>
+            <div class="flex-fill">
+              <input id="{{ 'itemTitle' + i }}" *ngIf="item == selectedItem" type="text"
+                class="form-control item-input-control" [(ngModel)]="item.description"
+                (keydown.enter)="saveItem(item, true)" (blur)="saveItem(item)" autofocus="autofocus" maxlength="200" />
+              <div class="todo-item-title" *ngIf="item != selectedItem" [ngClass]="{ 'done-todo': item.done }"
+                (click)="focusItem(item, 'itemTitle' + i)" class="form-control item-input-control">
+                <span>{{ item.description }}</span>
+              </div>
+            </div>
+            <div class="todo-item-commands">
+              <button class="btn btn-default btn-xs" role="button" (click)="deleteItem(item.id)">
+                <i class="fa-solid fa-trash text-danger"></i>
+              </button>
+            </div>
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between" (click)="addTempItem()">
+          <button class="btn btn-default">Add Item...</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
